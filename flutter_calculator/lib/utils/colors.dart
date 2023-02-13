@@ -11,7 +11,7 @@ class DarkColors {
 
 /// Light Colors
 class LightColors {
-  static const scaffoldBgColor = Color(0xffFFFFFF);
+  static const scaffoldBgColor = Colors.black;
   static const sheetBgColor = Color(0xffF9F9F9);
   static const btnBgColor = Color.fromARGB(255, 243, 243, 243);
   static const operatorColor = Color(0xffEB6666);
