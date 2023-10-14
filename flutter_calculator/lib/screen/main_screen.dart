@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
+import 'package:flutter_calculator/controller/calculate_controller.dart';
+import 'package:flutter_calculator/controller/theme_controller.dart';
+import 'package:flutter_calculator/utils/colors.dart';
+import 'package:flutter_calculator/widget/button.dart';
 import 'package:get/get.dart';
-
-///
-import '../controller/theme_controller.dart';
-import '../controller/calculate_controller.dart';
-import '../utils/colors.dart';
-import '../widget/button.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({Key? key}) : super(key: key);
@@ -33,12 +33,6 @@ class MainScreen extends StatelessWidget {
     "=",
   ];
 
-  /////////////////////////////////////
-  //@CodeWithFlexz on Instagram
-  //
-  //AmirBayat0 on Github
-  //Programming with Flexz on Youtube
-  /////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     var controller = Get.find<CalculateController>();
@@ -62,7 +56,7 @@ class MainScreen extends StatelessWidget {
   }
 
   /// In put Section - Enter Numbers
-  Expanded inPutSection(
+  Widget inPutSection(
       ThemeController themeController, CalculateController controller) {
     return Expanded(
         flex: 2,
@@ -79,117 +73,110 @@ class MainScreen extends StatelessWidget {
               itemCount: buttons.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4),
-              itemBuilder: (contex, index) {
+              itemBuilder: (context, index) {
                 switch (index) {
-
                   /// CLEAR BTN
                   case 0:
-                    return CustomButton(
-                        buttonTapped: () {
-                          controller.clearInputAndOutput();
-                        },
-                        color: themeController.isDark
-                            ? DarkColors.btnBgColor
-                            : LightColors.btnBgColor,
-                        textColor: themeController.isDark
-                            ? DarkColors.leftOperatorColor
-                            : LightColors.leftOperatorColor,
-                        text: buttons[index]);
+                    return CustomAppButton(
+                      buttonTapped: () {
+                        controller.clearInputAndOutput();
+                      },
+                      color: themeController.isDark
+                          ? DarkColors.leftOperatorColor
+                          : LightColors.leftOperatorColor,
+                      textColor: themeController.isDark
+                          ? DarkColors.btnBgColor
+                          : LightColors.btnBgColor,
+                      text: buttons[index],
+                    );
 
                   /// DELETE BTN
                   case 1:
-                    return CustomButton(
+                    return CustomAppButton(
                         buttonTapped: () {
                           controller.deleteBtnAction();
                         },
                         color: themeController.isDark
-                            ? DarkColors.btnBgColor
-                            : LightColors.btnBgColor,
-                        textColor: themeController.isDark
                             ? DarkColors.leftOperatorColor
                             : LightColors.leftOperatorColor,
+                        textColor: themeController.isDark
+                            ? DarkColors.btnBgColor
+                            : LightColors.btnBgColor,
                         text: buttons[index]);
 
                   /// EQUAL BTN
                   case 19:
-                    return CustomButton(
+                    return CustomAppButton(
                         buttonTapped: () {
                           controller.equalPressed();
                         },
                         color: themeController.isDark
-                            ? DarkColors.btnBgColor
-                            : LightColors.btnBgColor,
-                        textColor: themeController.isDark
                             ? DarkColors.leftOperatorColor
                             : LightColors.leftOperatorColor,
+                        textColor: themeController.isDark
+                            ? DarkColors.btnBgColor
+                            : LightColors.btnBgColor,
                         text: buttons[index]);
 
                   default:
-                    return CustomButton(
-                        buttonTapped: () {
-                          controller.onBtnTapped(buttons, index);
-                        },
-                        color: themeController.isDark
-                            ? DarkColors.btnBgColor
-                            : LightColors.btnBgColor,
-                        textColor: isOperator(buttons[index])
-                            ? LightColors.operatorColor
-                            : themeController.isDark
-                                ? Colors.white
-                                : Colors.black,
-                        text: buttons[index]);
+                    return CustomAppButton(
+                      buttonTapped: () {
+                        controller.onBtnTapped(buttons, index);
+                      },
+                      color: isOperator(buttons[index])
+                          ? LightColors.operatorColor
+                          : themeController.isDark
+                              ? DarkColors.btnBgColor
+                              : LightColors.btnBgColor,
+                      textColor: isOperator(buttons[index])
+                          ? Colors.white
+                          : themeController.isDark
+                              ? Colors.white
+                              : Colors.black,
+                      text: buttons[index],
+                    );
                 }
               }),
         ));
   }
 
   /// Out put Section - Show Result
-  Expanded outPutSection(
+  Widget outPutSection(
       ThemeController themeController, CalculateController controller) {
     return Expanded(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          alignment: Alignment.topCenter,
-          width: 100,
-          height: 45,
-          decoration: BoxDecoration(
-              color: themeController.isDark
-                  ? DarkColors.sheetBgColor
-                  : LightColors.sheetBgColor,
-              borderRadius: BorderRadius.circular(20)),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    themeController.lightTheme();
-                  },
-                  child: Icon(
-                    Icons.light_mode_outlined,
-                    color: themeController.isDark ? Colors.grey : Colors.black,
-                    size: 25,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    themeController.darkTheme();
-                  },
-                  child: Icon(
-                    Icons.dark_mode_outlined,
-                    color: themeController.isDark ? Colors.white : Colors.grey,
-                    size: 25,
-                  ),
-                )
-              ],
-            ),
-          ),
+        /// theme switcher
+        Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: GetBuilder<ThemeController>(builder: (controller) {
+            return AdvancedSwitch(
+              controller: controller.switcherController,
+              activeImage: const AssetImage('assets/day_sky.png'),
+              inactiveImage: const AssetImage('assets/night_sky.jpg'),
+              activeColor: Colors.green,
+              inactiveColor: Colors.grey,
+              activeChild: Text(
+                'Day',
+                style: GoogleFonts.ubuntu(
+                    fontWeight: FontWeight.bold, fontSize: 17),
+              ),
+              inactiveChild: Text(
+                'Night',
+                style: GoogleFonts.ubuntu(
+                    fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(1000)),
+              width: 100.0,
+              height: 45.0,
+              enabled: true,
+              disabledOpacity: 0.5,
+            );
+          }),
         ),
+
+        /// Main Result - user input and output
         Padding(
           padding: const EdgeInsets.only(right: 20, top: 70),
           child: Column(
@@ -198,23 +185,22 @@ class MainScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: Text(
                   controller.userInput,
-                  style: TextStyle(
+                  style: GoogleFonts.ubuntu(
                       color:
                           themeController.isDark ? Colors.white : Colors.black,
-                      fontSize: 25),
+                      fontSize: 38),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
               ),
               Container(
                 alignment: Alignment.bottomRight,
-                child: Text(controller.userOutput,
-                    style: TextStyle(
-                        color: themeController.isDark
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 32)),
+                child: Text(
+                  controller.userOutput,
+                  style: GoogleFonts.ubuntu(
+                    fontWeight: FontWeight.bold,
+                    color: themeController.isDark ? Colors.white : Colors.black,
+                    fontSize: 60,
+                  ),
+                ),
               ),
             ],
           ),
@@ -223,7 +209,7 @@ class MainScreen extends StatelessWidget {
     ));
   }
 
-  ///
+  /// is Operator Check
   bool isOperator(String y) {
     if (y == "%" || y == "/" || y == "x" || y == "-" || y == "+" || y == "=") {
       return true;
